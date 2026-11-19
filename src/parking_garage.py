@@ -26,7 +26,7 @@ class ParkingGarage:
         GPIO.setup(self.INFRARED_PIN1, GPIO.IN)
         GPIO.setup(self.INFRARED_PIN2, GPIO.IN)
         GPIO.setup(self.INFRARED_PIN3, GPIO.IN)
-        self.rtc = None # Variable not initialize yet (see User Story #3)
+        self.rtc = SDL_DS3231.SDL_DS3231()
         self.servo = None # Variable not initialize yet (see User Story #4)
         self.door_open = None # Variable not initialize yet (see User Story #4)
         self.red_light_on = None # Variable not initialize yet (see User Story #5)
@@ -48,8 +48,11 @@ class ParkingGarage:
 
 
     def calculate_parking_fee(self, entry_time: datetime) -> float:
-        # See User Story #3
-        pass
+        exit_time=self.rtc.read_datetime()
+        if entry_time.minute < exit_time.minute:
+            return ((exit_time.hour+1) - entry_time.hour)*2.5
+        return (exit_time.hour - entry_time.hour)*2.5
+
 
     def open_garage_door(self) -> None:
         # See User Story #4
