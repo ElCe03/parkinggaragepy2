@@ -61,4 +61,25 @@ class TestParkingGarage(TestCase):
         fee=parking_garage.calculate_parking_fee(datetime(2026,11,19,8,11))
         self.assertEqual(fee,7.5)
 
+    @patch.object(GPIO, "setup")
+    @patch.object(GPIO.PWM,"__init__",return_value=None)
+    @patch.object(GPIO.PWM, "start")
+    def test_servo_pin_config(self,mock_start: MagicMock, mock_pwn: MagicMock,mock_setup: MagicMock):
+        parking_garage = ParkingGarage()
+        mock_setup.assert_any_call(ParkingGarage.SERVO_PIN, GPIO.OUT)
+        mock_pwn.assert_any_call(ParkingGarage.SERVO_PIN, 50)
+        mock_start.assert_any_call(5)
+        self.assertFalse(parking_garage.door_open)
 
+    @patch.object(GPIO.PWM, "ChangeDutyCycle")
+    def test_open_garage_door(self, mock_pwm: MagicMock):
+        parking_garage = ParkingGarage()
+        parking_garage.open_garage_door()
+        self.assertTrue(parking_garage.door_open)
+
+    @patch.object(GPIO.PWM, "ChangeDutyCycle")
+    def test_open_garage_door(self, mock_pwm: MagicMock):
+        parking_garage = ParkingGarage()
+        parking_garage.door_open = True
+        parking_garage.close_garage_door()
+        self.assertFalse(parking_garage.door_open)
