@@ -23,6 +23,9 @@ class ParkingGarage:
         # See User Stories #1, #3-5
         GPIO.setmode(GPIO.BOARD) # Set the numbering schema to bord mode
         GPIO.setwarnings(False)
+        GPIO.setup(self.INFRARED_PIN1, GPIO.IN)
+        GPIO.setup(self.INFRARED_PIN2, GPIO.IN)
+        GPIO.setup(self.INFRARED_PIN3, GPIO.IN)
         self.rtc = None # Variable not initialize yet (see User Story #3)
         self.servo = None # Variable not initialize yet (see User Story #4)
         self.door_open = None # Variable not initialize yet (see User Story #4)
@@ -30,8 +33,10 @@ class ParkingGarage:
 
 
     def check_occupancy(self, pin: int) -> bool:
-        # See User Story #1
-        pass
+        if pin in [self.INFRARED_PIN1, self.INFRARED_PIN2,self.INFRARED_PIN3]:
+            return not GPIO.input(pin)
+        else :
+            raise ParkingGarageError
 
     def get_number_occupied_spots(self) -> int:
         # See User Story #2
