@@ -34,3 +34,12 @@ class TestParkingGarage(TestCase):
     def test_check_occupancy_wrong_pin(self):
         parking_garage = ParkingGarage()
         self.assertRaises(ParkingGarageError, parking_garage.check_occupancy, parking_garage.SERVO_PIN)
+
+    @patch.object(GPIO, "input")
+    def test_check_occupied_spots_full(self, mock_input: MagicMock):
+        mock_input.side_effect=[False,False,False]
+        parking_garage = ParkingGarage()
+        occupied_spots=parking_garage.get_number_occupied_spots()
+        self.assertEqual(occupied_spots,3)
+
+

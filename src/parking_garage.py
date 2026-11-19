@@ -39,8 +39,13 @@ class ParkingGarage:
             raise ParkingGarageError
 
     def get_number_occupied_spots(self) -> int:
-        # See User Story #2
-        pass
+        occupied_spots=0
+        for pin in [self.INFRARED_PIN1,self.INFRARED_PIN2,self.INFRARED_PIN3]:
+            if self.check_occupancy(pin):
+                occupied_spots+=1
+        return occupied_spots
+
+
 
     def calculate_parking_fee(self, entry_time: datetime) -> float:
         # See User Story #3
